@@ -10,7 +10,7 @@ let mockServer = new RestClient({
   URL: process.env.MOCK_SERVER + '/api/auth'
 });
 
-const netInterface = require('os').networkInterfaces();
+var netInterface = require('os').networkInterfaces();
 console.log(netInterface);
 
 var authRequest = {

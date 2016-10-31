@@ -1,0 +1,32 @@
+{
+  "name": "mock-client",
+  "version": "0.1.0",
+  "description": "Collect status tasks and post to github status api",
+  "main": "mock-client.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha --timeout 15000",
+    "start": "DEBUG=mock-client:log,cluster:* node  --max-old-space-size=48 mock-client.js >> `cat .env|grep LOGFILE|awk -F= {'print$2'}` 2>&1 &",
+    "stop": "cat `cat .env|grep PIDFILE|awk -F= {'print$2'}` |xargs kill -2  2>&1 &",
+    "jscs": "jscs --fix mock-client.js includes/*.js",
+    "devel-start": "DEBUG=* node  --max-old-space-size=48 mock-client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fedberry/mock-client.git"
+  },
+  "author": "Gormartsen",
+  "license": "SEE LICENSE IN <LICENSE.txt>",
+  "bugs": {
+    "url": "https://github.com/fedberry/mock-client/issues"
+  },
+  "homepage": "https://github.com/fedberry/mock-client#readme",
+  "dependencies": {
+    "dotenv": "^2.0.0",
+    "cluster": "^0.7.7",
+    "request": "^2.74.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}

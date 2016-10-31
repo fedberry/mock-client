@@ -5,16 +5,17 @@
 
 const fs = require('fs');
 const RestClient = require('./includes/restClient.js');
+require('dotenv').config();
 
 let mockServer = new RestClient({
   URL: process.env.MOCK_SERVER + '/api/auth'
 });
 
-var netInterface = require('os').networkInterfaces();
-console.log(netInterface);
+const netInterfaces = require('os').networkInterfaces();
+const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
 var authRequest = {
-  MAC: netInterface,
+  MAC: interfaceInfo.mac,
   arch:  process.arch
 }
 console.log(authRequest);

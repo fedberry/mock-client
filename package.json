@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/fedberry/mock-client#readme",
   "dependencies": {
-    "dotenv": "^2.0.0",
     "cluster": "^0.7.7",
+    "dotenv-save": "^1.2.0",
     "request": "^2.74.0"
   },
   "devDependencies": {

@@ -9,28 +9,39 @@
 const Cluster = require('./includes/cluster.js');
 const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
+require('dotenv-save').config();
 
 // Debug module.
 const debugF = require('debug');
 
-require('dotenv').config();
+const debug = {
+  log: debugF('mock-client:log'),
+  debug: debugF('mock-client:debug')
+};
+
+const netInterfaces = require('os').networkInterfaces();
+const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
+
+
 
 var mcluster = new Cluster({
   count: 2
 });
 
 if (!mcluster.isMaster) {
-  console.log('Hello World');
-  let taskServer = new RestClient({
-    URL: process.env.MOCK_SERVER,
+  let mockServer = new RestClient({
+    URL: process.env.MOCK_SERVER + '/api/auth',
     secureKey: process.env.SECRET
   });
-  setInterval(function(str1, str2) {
-    console.log(str1 + " " + str2);
-    var taskRequest = {
-      test: 'test'
-    }
-    taskServer.post(taskRequest, function(err, taskAnswer) {
+
+  debug.log('Requesting token.');
+
+  var tokenRequest = {
+    method: 'token',
+    MAC: interfaceInfo.mac,
+    arch:  process.arch
+  }
+  mockServer.post(tokenRequest, function(err, taskAnswer) {
     if (err) {
       console.log('---');
       console.log(err);
@@ -38,6 +49,10 @@ if (!mcluster.isMaster) {
     }
 
     console.log(taskAnswer);
+    setInterval(function(token, expire) {
+      console.log(token);
+      console.log(expire);
+    }, 2000, taskAnswer.token, taskAnswer.expire);
+
   });
-  }, 1000, "Hello.", "How are you?");
 }

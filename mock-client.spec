@@ -50,7 +50,7 @@ cp  config/mock-client.config %{buildroot}/%{_sysconfdir}/mock-client/
 %{_sysconfdir}/mock-client/mock-client.config
 
 %changelog
-* Thu Nov 3 2016 Gor Martsen <gor@fedberry.org> - 0.1.0-2
+* Thu Nov 3 2016 Gor Martsen <gor@fedberry.org> - 0.1.1-1
 - Add /etc/mock-client/mock-client.config file.
 - fix shabang and bin permissions
 

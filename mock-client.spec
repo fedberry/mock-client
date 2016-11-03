@@ -17,6 +17,7 @@ Small and light nodejs based agent to run tasks from http://mock.fedberry.org
 
 %prep
 %setup -q -n mock-client-%{version}
+%nodejs_fixdep -r cluster
 
 %build
 

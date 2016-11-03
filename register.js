@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/node --harmony
 /**
  * Send status.
  */
@@ -9,7 +9,7 @@ const RestClient = require('./includes/restClient.js');
 const DotEnv = require('dotenv-save');
 const exec = require('child_process').exec;
 
-DotEnv.config();
+DotEnv.config({path: '/etc/mock-client/mock-client.config'});
 
 let mockServer = new RestClient({
   URL: process.env.MOCK_SERVER + '/api/auth'

@@ -1,6 +1,6 @@
 Name:           mock-client
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 
 License:        MIT
@@ -28,8 +28,14 @@ mkdir -p %{buildroot}/%{_bindir}
 ln -s  %{nodejs_sitelib}/mock-client/mock-client.js %{buildroot}/%{_bindir}/mock-client
 ln -s  %{nodejs_sitelib}/mock-client/register.js %{buildroot}/%{_bindir}/mock-client-register
 
+chmod 755 %{nodejs_sitelib}/mock-client/mock-client.js
+chmod 755 %{nodejs_sitelib}/mock-client/register.js
+
 mkdir -p %{buildroot}/%{_sysconfdir}/mock
 cp  config/fedberry-24-armv6l.cfg %{buildroot}/%{_sysconfdir}/mock/
+
+mkdir -p %{buildroot}/%{_sysconfdir}/mock-client
+cp  config/mock-client.config %{buildroot}/%{_sysconfdir}/mock-client/
 
 %nodejs_symlink_deps
 
@@ -40,8 +46,13 @@ cp  config/fedberry-24-armv6l.cfg %{buildroot}/%{_sysconfdir}/mock/
 %{_bindir}/mock-client
 %{_bindir}/mock-client-register
 %{_sysconfdir}/mock/fedberry-24-armv6l.cfg
-
+%{_sysconfdir}/mock-client
+%{_sysconfdir}/mock-client/mock-client.config
 
 %changelog
+* Thu Nov 3 2016 Gor Martsen <gor@fedberry.org> - 0.1.0-2
+- Add /etc/mock-client/mock-client.config file.
+- fix shabang and bin permissions
+
 * Thu Nov 3 2016 Gor Martsen <gor@fedberry.org> - 0.1.0-1
 - Initial release.

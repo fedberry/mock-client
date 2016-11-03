@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/node --harmony
 /**
  * Central Startup file.
  * Launch cluster and workers.
@@ -10,7 +10,7 @@
 const Cluster = require('./includes/cluster.js');
 const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
-require('dotenv-save').config();
+require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
 
 // Debug module.
 const debugF = require('debug');

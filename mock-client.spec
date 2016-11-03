@@ -28,8 +28,8 @@ mkdir -p %{buildroot}/%{_bindir}
 ln -s  %{nodejs_sitelib}/mock-client/mock-client.js %{buildroot}/%{_bindir}/mock-client
 ln -s  %{nodejs_sitelib}/mock-client/register.js %{buildroot}/%{_bindir}/mock-client-register
 
-chmod 755 %{nodejs_sitelib}/mock-client/mock-client.js
-chmod 755 %{nodejs_sitelib}/mock-client/register.js
+chmod 755 %{buildroot}/%{nodejs_sitelib}/mock-client/mock-client.js
+chmod 755 %{buildroot}/%{nodejs_sitelib}/mock-client/register.js
 
 mkdir -p %{buildroot}/%{_sysconfdir}/mock
 cp  config/fedberry-24-armv6l.cfg %{buildroot}/%{_sysconfdir}/mock/

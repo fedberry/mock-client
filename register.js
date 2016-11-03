@@ -6,7 +6,7 @@
 const fs = require('fs');
 const RestClient = require('./includes/restClient.js');
 const DotEnv = require('dotenv-save');
-const execSync = require('child_process').execSync;
+const exec = require('child_process').exec;
 
 DotEnv.config();
 
@@ -19,28 +19,32 @@ const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
 var mac = '';
 if(!interfaceInfo.mac){
-  mac = execSync('cat /sys/class/net/' + process.env.INTERFACE + '/address').toString()
+  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address')
 } else {
   mac = interfaceInfo.mac;
 }
 
-var authRequest = {
-  method: 'register',
-  MAC: mac,
-  arch:  execSync('arch').toString()
-}
-console.log(authRequest);
+exec('arch', sendRegisterRequest) ;
 
-mockServer.post(authRequest, function(err, taskAnswer) {
-  if (err) {
-    console.log('---');
-    console.log(err);
-    console.log(err.stack);
-  } else {
-    if(!taskAnswer.error) {
-      DotEnv.set('SECRET', taskAnswer.secret);
-    }
+function sendRegisterRequest(error, stdout, stderr) {
+  var authRequest = {
+    method: 'register',
+    MAC: mac,
+    arch:  stdout.toString()
   }
+  console.log(authRequest);
 
-  console.log(taskAnswer);
-});
+  mockServer.post(authRequest, function(err, taskAnswer) {
+    if (err) {
+      console.log('---');
+      console.log(err);
+      console.log(err.stack);
+    } else {
+      if(!taskAnswer.error) {
+        DotEnv.set('SECRET', taskAnswer.secret);
+      }
+    }
+
+    console.log(taskAnswer);
+  });
+}

@@ -1,6 +1,6 @@
 Name:           mock-client
-Version:        0.1.0
-Release:        2%{?dist}
+Version:        0.1.1
+Release:        1%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 
 License:        MIT

@@ -19,7 +19,7 @@ const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
 var mac = '';
 if(!interfaceInfo.mac){
-  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address')
+  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
 } else {
   mac = interfaceInfo.mac;
 }
@@ -30,7 +30,7 @@ function sendRegisterRequest(error, stdout, stderr) {
   var authRequest = {
     method: 'register',
     MAC: mac,
-    arch:  stdout.toString()
+    arch:  stdout.toString().trim();
   }
   console.log(authRequest);
 

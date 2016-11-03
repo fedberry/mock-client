@@ -27,24 +27,24 @@ if(!interfaceInfo.mac){
 exec('arch', sendRegisterRequest) ;
 
 function sendRegisterRequest(error, stdout, stderr) {
+  var arch = stdout.toString().trim();
   var authRequest = {
     method: 'register',
     MAC: mac,
-    arch:  stdout.toString().trim()
+    arch: arch
   }
   console.log(authRequest);
 
   mockServer.post(authRequest, function(err, taskAnswer) {
     if (err) {
-      console.log('---');
+      console.log('Err: ---');
       console.log(err);
       console.log(err.stack);
     } else {
       if(!taskAnswer.error) {
         DotEnv.set('SECRET', taskAnswer.secret);
       }
+      console.log('Agent registered. MAC:' + mac + ' ARCH:' + arch)
     }
-
-    console.log(taskAnswer);
   });
 }

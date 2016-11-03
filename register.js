@@ -30,7 +30,7 @@ function sendRegisterRequest(error, stdout, stderr) {
   var authRequest = {
     method: 'register',
     MAC: mac,
-    arch:  stdout.toString().trim();
+    arch:  stdout.toString().trim()
   }
   console.log(authRequest);
 

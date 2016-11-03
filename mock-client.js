@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Central Startup file.
  * Launch cluster and workers.
@@ -41,18 +42,34 @@ if (!mcluster.isMaster) {
     MAC: interfaceInfo.mac,
     arch:  process.arch
   }
-  mockServer.post(tokenRequest, function(err, taskAnswer) {
+  mockServer.post(tokenRequest, function(err, serverAnswer) {
     if (err) {
       console.log('---');
       console.log(err);
       console.log(err.stack);
     }
 
-    console.log(taskAnswer);
+    console.log(serverAnswer);
+    mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+
     setInterval(function(token, expire) {
       console.log(token);
       console.log(expire);
-    }, 2000, taskAnswer.token, taskAnswer.expire);
+      var taskRequest = {
+        MAC: interfaceInfo.mac,
+        arch:  process.arch
+      }
+      mockServer.search(taskRequest, function(err, serverAnswer) {
+        if (err) {
+          console.log('---');
+          console.log(err);
+          console.log(err.stack);
+        }
+
+        console.log(serverAnswer);
+      });
+
+    }, 2000, serverAnswer.token, serverAnswer.expire);
 
   });
 }

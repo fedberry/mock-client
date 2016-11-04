@@ -23,53 +23,67 @@ const debug = {
 const netInterfaces = require('os').networkInterfaces();
 const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
+var mac = '';
+if(!interfaceInfo.mac){
+  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
+} else {
+  mac = interfaceInfo.mac;
+}
 
+exec('arch', initService) ;
 
-var mcluster = new Cluster({
-  count: 2
-});
+function initService(error, stdout, stderr) {
+  var arch = stdout.toString().trim();
 
-if (!mcluster.isMaster) {
-  let mockServer = new RestClient({
-    URL: process.env.MOCK_SERVER + '/api/auth',
-    secureKey: process.env.SECRET
+  var mcluster = new Cluster({
+    count: 1
   });
 
-  debug.log('Requesting token.');
+  if (!mcluster.isMaster) {
+    let mockServer = new RestClient({
+      URL: process.env.MOCK_SERVER + '/api/auth',
+      secureKey: process.env.SECRET
+    });
 
-  var tokenRequest = {
-    method: 'token',
-    MAC: interfaceInfo.mac,
-    arch:  process.arch
-  }
-  mockServer.post(tokenRequest, function(err, serverAnswer) {
-    if (err) {
-      console.log('---');
-      console.log(err);
-      console.log(err.stack);
+    debug.log('Requesting token.');
+
+    var tokenRequest = {
+      method: 'token',
+      MAC: mac,
+      arch:  arch
     }
 
-    console.log(serverAnswer);
-    mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+    debug.debug(tokenRequest);
 
-    setInterval(function(token, expire) {
-      console.log(token);
-      console.log(expire);
-      var taskRequest = {
-        MAC: interfaceInfo.mac,
-        arch:  process.arch
+    mockServer.post(tokenRequest, function(err, serverAnswer) {
+      if (err) {
+        console.log('---');
+        console.log(err);
+        console.log(err.stack);
       }
-      mockServer.search(taskRequest, function(err, serverAnswer) {
-        if (err) {
-          console.log('---');
-          console.log(err);
-          console.log(err.stack);
+
+      console.log(serverAnswer);
+      mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+
+      setInterval(function(token, expire) {
+        console.log(token);
+        console.log(expire);
+        var taskRequest = {
+          MAC: interfaceInfo.mac,
+          arch:  process.arch
         }
+        mockServer.search(taskRequest, function(err, serverAnswer) {
+          if (err) {
+            console.log('---');
+            console.log(err);
+            console.log(err.stack);
+          }
 
-        console.log(serverAnswer);
-      });
+          console.log(serverAnswer);
+        });
 
-    }, 2000, serverAnswer.token, serverAnswer.expire);
+      }, 2000, serverAnswer.token, serverAnswer.expire);
 
-  });
+    });
+  }
 }

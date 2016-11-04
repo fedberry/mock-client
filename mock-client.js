@@ -12,6 +12,7 @@ const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
 require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
 const exec = require('child_process').exec;
+const ROOTDIR = "/home/mockclient/";
 
 // Debug module.
 const debugF = require('debug');
@@ -96,6 +97,7 @@ const requestTask = function() {
       console.log(err.stack);
     } else {
       serverAnswer.task.reportInterval = setInterval(reportTask, 2000, serverAnswer.task);
+      initTask();
     }
 
     console.log(serverAnswer);
@@ -105,4 +107,21 @@ const requestTask = function() {
 
 const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
+}
+
+const initTask = function(task){
+  fs.mkdirSync(ROOTDIR + 'tasks');
+  fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
+  fs.chownSync(ROOTDIR + 'tasks', 'mockclient', 'mock');
+  fs.chownSync(ROOTDIR + 'tasks/' + task.tid, 'mockclient', 'mock');
+
+  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {
+    if (error) {
+      debug.log('TaskID %s Failed.', task.tid);
+      debug.log(stdout + stderr);
+      return;
+    } else {
+      debug.debug('[%s] File downloaded', task.tid);
+    }
+  });
 }

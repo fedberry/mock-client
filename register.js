@@ -43,7 +43,7 @@ function sendRegisterRequest(error, stdout, stderr) {
       console.log(err.stack);
     } else {
       if(!taskAnswer.error) {
-        DotEnv.set('SECRET', taskAnswer.secret);
+        DotEnv.set('SECRET', taskAnswer.secret, {path: '/etc/mock-client/mock-client.config'});
       }
       console.log('Agent registered. MAC:' + mac + ' ARCH:' + arch)
     }

@@ -100,7 +100,6 @@ const requestTask = function() {
       console.log(err);
       console.log(err.stack);
     } else {
-      serverAnswer.task.reportInterval = setInterval(reportTask, 2000, serverAnswer.task);
       takeTask(serverAnswer.task);
     }
 

@@ -24,7 +24,8 @@ const debug = {
 const netInterfaces = require('os').networkInterfaces();
 const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
-var mac = '';
+var mac, token, token_expire, arch;
+
 if(!interfaceInfo.mac){
   mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
 } else {
@@ -34,14 +35,13 @@ if(!interfaceInfo.mac){
 exec('arch', initService) ;
 
 function initService(error, stdout, stderr) {
-  var arch = stdout.toString().trim();
+  arch = stdout.toString().trim();
 
   var mcluster = new Cluster({
     count: 1
   });
 
   if (!mcluster.isMaster) {
-    var token, token_expire;
 
     let mockServer = new RestClient({
       URL: process.env.MOCK_SERVER + '/api/auth',

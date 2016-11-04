@@ -116,12 +116,10 @@ const reportTask = function(task) {
 const initTask = function(task){
   if(!fs.existsSync(ROOTDIR + 'tasks')){
     fs.mkdirSync(ROOTDIR + 'tasks');
-    fs.chownSync(ROOTDIR + 'tasks', 'mockclient', 'mock');
   }
 
   if(!fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
     fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
-    fs.chownSync(ROOTDIR + 'tasks/' + task.tid, 'mockclient', 'mock');
   }
 
   exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {

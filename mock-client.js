@@ -118,7 +118,7 @@ const initTask = function(task){
     fs.mkdirSync(ROOTDIR + 'tasks');
   }
 
-  if(!fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
+  if(fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
     deleteFolderRecursive(ROOTDIR + 'tasks/' + task.tid);
   }
 

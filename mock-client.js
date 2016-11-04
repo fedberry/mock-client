@@ -36,6 +36,11 @@ exec('arch', initService) ;
 
 function initService(error, stdout, stderr) {
   arch = stdout.toString().trim();
+  var count = 1;
+
+  if(process.env.CHILDCOUNT) {
+    count = process.env.CHILDCOUNT;
+  }
 
   var mcluster = new Cluster({
     count: 1

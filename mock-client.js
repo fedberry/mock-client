@@ -119,8 +119,10 @@ const initTask = function(task){
   }
 
   if(!fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
-    fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
+    fs.rmdirSync(ROOTDIR + 'tasks/' + task.tid);
   }
+
+  fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
 
   exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {
     if (error) {

@@ -62,10 +62,10 @@ RestClient.prototype._request = function(statusRequest, callback) {
       headers.signature = 'sha256=' +
         signature('sha256', JSON.stringify(requestData), self.settings.secureKey);
     }
-  } else {
-    if (statusRequest.token) {
-      headers.token = statusRequest.token;
-    }
+  }
+
+  if (statusRequest.token) {
+    headers.token = statusRequest.token;
   }
 
   if (recordMethods.indexOf(statusRequest.method) > -1) {

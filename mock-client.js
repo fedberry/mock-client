@@ -112,12 +112,11 @@ const requestTask = function() {
 const takeTask = function(task) {
 
   var takeTaskRequest = {
-    method: 'delegate',
-    tid: task.tid,
-    token:  token
+    method: 'delegate'
   }
   debug.debug('Take task request: %s', JSON.stringify(takeTaskRequest, null, 2));
-  mockServer.put(takeTaskRequest, function(err, serverAnswer) {
+
+  mockServer.put(task.tid, token, takeTaskRequest, function(err, serverAnswer) {
     if (err) {
       console.log('---');
       console.log(err);

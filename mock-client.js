@@ -33,6 +33,10 @@ if(!interfaceInfo.mac){
   mac = interfaceInfo.mac;
 }
 
+// Switch to user mockclient
+process.setgid('mock');
+process.setuid('mockclient');
+
 exec('arch', initService) ;
 
 function initService(error, stdout, stderr) {

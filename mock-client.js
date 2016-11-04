@@ -41,6 +41,8 @@ function initService(error, stdout, stderr) {
   });
 
   if (!mcluster.isMaster) {
+    var token, token_expire;
+
     let mockServer = new RestClient({
       URL: process.env.MOCK_SERVER + '/api/auth',
       secureKey: process.env.SECRET
@@ -65,27 +67,30 @@ function initService(error, stdout, stderr) {
 
       console.log(serverAnswer);
       mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+      token = serverAnswer.token;
+      token_expire = serverAnswer.expire;
 
-      setInterval(function(token, expire) {
-        console.log(token);
-        console.log(expire);
-        var taskRequest = {
-          MAC: mac,
-          arch:  arch
-        }
-        debug.debug('Task request: %s', JSON.stringify(taskRequest, null, 2));
-        mockServer.search(taskRequest, function(err, serverAnswer) {
-          if (err) {
-            console.log('---');
-            console.log(err);
-            console.log(err.stack);
-          }
-
-          console.log(serverAnswer);
-        });
-
-      }, 2000, serverAnswer.token, serverAnswer.expire);
+      setInterval(requestTask, 2000);
 
     });
   }
+}
+
+const requestTask = function() {
+
+  var taskRequest = {
+    MAC: mac,
+    arch:  arch
+  }
+  debug.debug('Task request: %s', JSON.stringify(taskRequest, null, 2));
+  mockServer.search(taskRequest, function(err, serverAnswer) {
+    if (err) {
+      console.log('---');
+      console.log(err);
+      console.log(err.stack);
+    }
+
+    console.log(serverAnswer);
+  });
+
 }

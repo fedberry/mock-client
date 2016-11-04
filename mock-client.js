@@ -74,8 +74,9 @@ function initService(error, stdout, stderr) {
       mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
       token = serverAnswer.token;
       token_expire = serverAnswer.expire;
+      requestTask();
 
-      setInterval(requestTask, 2000);
+      //setInterval(requestTask, 2000);
 
     });
   }
@@ -93,9 +94,15 @@ const requestTask = function() {
       console.log('---');
       console.log(err);
       console.log(err.stack);
+    } else {
+      serverAnswer.task.reportInterval = setInterval(reportTask, 2000, serverAnswer.task);
     }
 
     console.log(serverAnswer);
   });
 
+}
+
+const reportTask = function(task) {
+  debug.log('Report Task %s.', JSON.stringify(task, null, 2));
 }

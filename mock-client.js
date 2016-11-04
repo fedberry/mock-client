@@ -54,7 +54,7 @@ function initService(error, stdout, stderr) {
       arch:  arch
     }
 
-    debug.debug(tokenRequest);
+    debug.debug( tokenRequest.toString());
 
     mockServer.post(tokenRequest, function(err, serverAnswer) {
       if (err) {
@@ -70,8 +70,8 @@ function initService(error, stdout, stderr) {
         console.log(token);
         console.log(expire);
         var taskRequest = {
-          MAC: interfaceInfo.mac,
-          arch:  process.arch
+          MAC: mac,
+          arch:  arch
         }
         mockServer.search(taskRequest, function(err, serverAnswer) {
           if (err) {

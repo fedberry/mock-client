@@ -100,15 +100,21 @@ const requestTask = function() {
       console.log(err);
       console.log(err.stack);
     } else {
-      takeTask(serverAnswer.task);
+      if(serverAnswer.task) {
+        takeTask(serverAnswer.task);
+      } else {
+        setTimeout(requestTask, 5000);
+      }
     }
-
     console.log(serverAnswer);
   });
 
 }
 
 const takeTask = function(task) {
+
+  // Init task log.
+  task.log = "";
 
   var takeTaskRequest = {
     method: 'delegate'

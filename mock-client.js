@@ -11,6 +11,7 @@ const Cluster = require('./includes/cluster.js');
 const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
 require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
+const exec = require('child_process').exec;
 
 // Debug module.
 const debugF = require('debug');

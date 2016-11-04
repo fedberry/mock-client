@@ -101,7 +101,30 @@ const requestTask = function() {
       console.log(err.stack);
     } else {
       serverAnswer.task.reportInterval = setInterval(reportTask, 2000, serverAnswer.task);
-      initTask(serverAnswer.task);
+      takeTask(serverAnswer.task);
+    }
+
+    console.log(serverAnswer);
+  });
+
+}
+
+const takeTask = function(task) {
+
+  var takeTaskRequest = {
+    method: 'delegate',
+    tid: task.tid,
+    token:  token
+  }
+  debug.debug('Take task request: %s', JSON.stringify(takeTaskRequest, null, 2));
+  mockServer.put(takeTaskRequest, function(err, serverAnswer) {
+    if (err) {
+      console.log('---');
+      console.log(err);
+      console.log(err.stack);
+    } else {
+      task.reportInterval = setInterval(reportTask, 2000, task);
+      initTask(task);
     }
 
     console.log(serverAnswer);
@@ -116,13 +139,16 @@ const reportTask = function(task) {
 const initTask = function(task){
   if(!fs.existsSync(ROOTDIR + 'tasks')){
     fs.mkdirSync(ROOTDIR + 'tasks');
+    task.log = task.log + "mkdir " + ROOTDIR + 'tasks'  + task.tid + "\n";
   }
 
   if(fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
     deleteFolderRecursive(ROOTDIR + 'tasks/' + task.tid);
+    task.log = task.log + "remove  " + ROOTDIR + 'tasks/'  + task.tid + "\n";
   }
 
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
+  task.log = task.log + "mkdir  " + ROOTDIR + 'tasks/'  + task.tid + "\n";
 
   exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {
     if (error) {
@@ -132,6 +158,8 @@ const initTask = function(task){
     } else {
       debug.debug('[%s] File downloaded', task.tid);
     }
+    task.log = task.log + "Download  " + task.url + "\n";
+    task.log = task.log + stdout + stderr;
   });
 }
 

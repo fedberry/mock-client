@@ -11,9 +11,20 @@ ExclusiveArch:  %{nodejs_arches} noarch
 
 BuildRequires:  nodejs-packaging
 
+Requires:       mock
+
+Requires(pre): /usr/sbin/useradd, /usr/bin/getent
+Requires(postun): /usr/sbin/userdel
+
 %description
 Small and light nodejs based agent to run tasks from http://mock.fedberry.org
 
+
+%pre
+/usr/bin/getent passwd mockclient || /usr/sbin/useradd -r -d /home/mockclient -s /bin/bash mockclient -g mock
+
+%postun
+/usr/sbin/userdel -fr mockclient
 
 %prep
 %setup -q -n mock-client-%{version}

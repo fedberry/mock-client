@@ -16,7 +16,7 @@
   ],
   "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
   "maximumLineLength": {
-    "value": 100,
+    "value": 120,
     "allowUrlComments": true
   },
   "excludeFiles": [

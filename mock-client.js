@@ -102,7 +102,6 @@ const requestTask = function() {
         setTimeout(requestTask, 5000);
       }
     }
-    console.log(serverAnswer);
   });
 
 }

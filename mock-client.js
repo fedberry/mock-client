@@ -165,10 +165,10 @@ const initTask = function(task) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);
-      // TODO. 
-      // - mark task as failed. 
+      // TODO.
+      // - mark task as failed.
       // - Upload log.
-      //  Stop timer. 
+      //  Stop timer.
       //requestTask();
     } else {
       debug.debug('[%s] File downloaded', task.tid);
@@ -187,15 +187,15 @@ const runMock = function(task) {
     '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
   ]);
 
-  mockRun.stdout.on('data', (data) => {
+  mockRun.stdout.on('data', function(data) {
     console.log(`stdout: ${data}`);
   });
 
-  mockRun.stderr.on('data', (data) => {
+  mockRun.stderr.on('data', function(data) {
     console.log(`stderr: ${data}`);
   });
 
-  mockRun.on('close', (code) => {
+  mockRun.on('close', function(code) {
     console.log(`child process exited with code ${code}`);
   });
 

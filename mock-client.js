@@ -73,16 +73,12 @@ function initService(error, stdout, stderr) {
         console.log('---');
         console.log(err);
         console.log(err.stack);
+      } else {
+        mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+        token = serverAnswer.token;
+        tokenExpire = serverAnswer.expire;
+        requestTask();
       }
-
-      console.log(serverAnswer);
-      mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
-      token = serverAnswer.token;
-      tokenExpire = serverAnswer.expire;
-      requestTask();
-
-      //setInterval(requestTask, 2000);
-
     });
   }
 }
@@ -130,8 +126,6 @@ const takeTask = function(task) {
       task.reportInterval = setInterval(reportTask, 2000, task);
       initTask(task);
     }
-
-    console.log(serverAnswer);
   });
 
 }
@@ -158,12 +152,11 @@ const initTask = function(task) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);
-      return;
     } else {
       debug.debug('[%s] File downloaded', task.tid);
+      task.log = task.log + 'Download  ' + task.url + '\n';
+      task.log = task.log + stdout + stderr;
     }
-    task.log = task.log + 'Download  ' + task.url + '\n';
-    task.log = task.log + stdout + stderr;
   });
 }
 

@@ -25,7 +25,7 @@ const debug = {
 const netInterfaces = require('os').networkInterfaces();
 const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
-var mac, token, token_expire, arch, mockServer;
+var mac, token, tokenExpire, arch, mockServer;
 
 if (!interfaceInfo.mac) {
   mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
@@ -78,7 +78,7 @@ function initService(error, stdout, stderr) {
       console.log(serverAnswer);
       mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
       token = serverAnswer.token;
-      token_expire = serverAnswer.expire;
+      tokenExpire = serverAnswer.expire;
       requestTask();
 
       //setInterval(requestTask, 2000);

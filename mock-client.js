@@ -162,14 +162,13 @@ const initTask = function(task) {
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
   task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '\n';
 
-  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {
+  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget -q' + task.url, function(error, stdout, stderr) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);
     } else {
       debug.debug('[%s] File downloaded', task.tid);
-      task.log = task.log + 'Download  ' + task.url + '\n';
-      task.log = task.log + stdout + stderr;
+      task.log = task.log + 'Downloaded  ' + task.url + '\n';
     }
   });
 }

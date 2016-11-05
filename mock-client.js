@@ -177,6 +177,7 @@ const initTask = function(task) {
     } else {
       debug.debug('[%s] File downloaded', task.tid);
       task.log = task.log + 'Downloaded  ' + task.url + '\n';
+      console.log(stdout + stderr);
       runMock(task);
     }
   });

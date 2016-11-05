@@ -131,18 +131,19 @@ const takeTask = function(task) {
 
 const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
-  var takeTaskRequest = {
+  var reportTaskRequest = {
     method: 'update',
     log: task.log
   }
-  debug.debug('Update task request: %s', JSON.stringify(takeTaskRequest, null, 2));
+  debug.debug('Update task request: %s', JSON.stringify(reportTaskRequest, null, 2));
 
-  mockServer.put(task.tid, token, takeTaskRequest, function(err, serverAnswer) {
+  mockServer.put(task.tid, token, reportTaskRequest, function(err, serverAnswer) {
     if (err) {
       console.log('---');
       console.log(err);
       console.log(err.stack);
     }
+    console.log(serverAnswer);
   });
 }
 

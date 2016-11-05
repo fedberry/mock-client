@@ -189,14 +189,18 @@ const runMock = function(task) {
 
   mockRun.stdout.on('data', function(data) {
     console.log('stdout: %s', data);
+    task.log = task.log + 'stdout: ' + data;
   });
 
   mockRun.stderr.on('data', function(data) {
     console.log('stderr: %s', data);
+    task.log = task.log + 'stderr: ' + data;
+
   });
 
   mockRun.on('close', function(code) {
     console.log('child process exited with code %s', code);
+    task.log = task.log + 'Mock finished with code: ' + code;
   });
 
 }

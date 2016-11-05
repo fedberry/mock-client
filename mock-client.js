@@ -12,6 +12,7 @@ const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
 require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
 const exec = require('child_process').exec;
+const spawn = require('child_process').spawn;
 const ROOTDIR = '/home/mockclient/';
 
 // Debug module.
@@ -179,24 +180,25 @@ const initTask = function(task) {
 }
 
 const runMock = function(task) {
+  const mockRun = spawn('mock', [
+    process.env.MOCK_OPTIONS,
+    '-r', process.env.MOCK_CONFIG,
+    '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url),
+    '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
+  ]);
 
-  exec('mock ' + process.env.MOCK_OPTIONS
-    + ' -r ' + process.env.MOCK_CONFIG
-    + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url)
-    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' ,
-  function(error, stdout, stderr) {
-    if (error) {
-      debug.log('TaskID %s Failed.', task.tid);
-      debug.log(stdout + stderr);
-      // TODO. 
-      // - mark task as failed. 
-      // - Upload log.
-      //  Stop timer. 
-      //requestTask();
-    } else {
-      console.log(stdout + stderr)
-    }
+  mockRun.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
   });
+
+  mockRun.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  mockRun.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+
 }
 
 const deleteFolderRecursive = function(path) {

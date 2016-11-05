@@ -33,10 +33,6 @@ if (!interfaceInfo.mac) {
   mac = interfaceInfo.mac;
 }
 
-// Switch to user mockclient
-process.setgid('mock');
-process.setuid('mockclient');
-
 exec('arch', initService) ;
 
 function initService(error, stdout, stderr) {
@@ -52,6 +48,10 @@ function initService(error, stdout, stderr) {
   });
 
   if (!mcluster.isMaster) {
+    // Switch to user mockclient
+    process.setgid('mock');
+    process.setuid('mockclient');
+
 
     mockServer = new RestClient({
       URL: process.env.MOCK_SERVER + '/api/auth',

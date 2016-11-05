@@ -122,6 +122,7 @@ const takeTask = function(task) {
       console.log(err);
       console.log(err.stack);
     } else {
+      debug.debug('Take answer %s', JSON.stringify(serverAnswer, null, 2));
       task.reportInterval = setInterval(reportTask, 2000, task);
       initTask(task);
     }

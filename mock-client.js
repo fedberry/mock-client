@@ -165,7 +165,7 @@ const initTask = function(task) {
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid + '/result');
   task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '/result' + '\n';
 
-  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget -q' + task.url, function(error, stdout, stderr) {
+  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget -q ' + task.url, function(error, stdout, stderr) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);

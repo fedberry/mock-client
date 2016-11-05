@@ -182,7 +182,7 @@ const initTask = function(task) {
   });
 }
 
-const runMock(task) {
+const runMock = function(task) {
 
   exec('mock ' + process.env.MOCK_OPTIONS
     + ' -r ' + process.env.MOCK_CONFIG

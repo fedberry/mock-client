@@ -12,7 +12,7 @@ const RestClient = require('./includes/restClient.js');
 const fs = require('fs');
 require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
 const exec = require('child_process').exec;
-const ROOTDIR = "/home/mockclient/";
+const ROOTDIR = '/home/mockclient/';
 
 // Debug module.
 const debugF = require('debug');
@@ -27,7 +27,7 @@ const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
 
 var mac, token, token_expire, arch, mockServer;
 
-if(!interfaceInfo.mac){
+if (!interfaceInfo.mac) {
   mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
 } else {
   mac = interfaceInfo.mac;
@@ -43,7 +43,7 @@ function initService(error, stdout, stderr) {
   arch = stdout.toString().trim();
   var count = 1;
 
-  if(process.env.CHILDCOUNT) {
+  if (process.env.CHILDCOUNT) {
     count = process.env.CHILDCOUNT;
   }
 
@@ -100,7 +100,7 @@ const requestTask = function() {
       console.log(err);
       console.log(err.stack);
     } else {
-      if(serverAnswer.task) {
+      if (serverAnswer.task) {
         takeTask(serverAnswer.task);
       } else {
         setTimeout(requestTask, 5000);
@@ -114,7 +114,7 @@ const requestTask = function() {
 const takeTask = function(task) {
 
   // Init task log.
-  task.log = "";
+  task.log = '';
 
   var takeTaskRequest = {
     method: 'delegate'
@@ -140,19 +140,19 @@ const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
 }
 
-const initTask = function(task){
-  if(!fs.existsSync(ROOTDIR + 'tasks')){
+const initTask = function(task) {
+  if (!fs.existsSync(ROOTDIR + 'tasks')) {
     fs.mkdirSync(ROOTDIR + 'tasks');
-    task.log = task.log + "mkdir " + ROOTDIR + 'tasks'  + task.tid + "\n";
+    task.log = task.log + 'mkdir ' + ROOTDIR + 'tasks'  + task.tid + '\n';
   }
 
-  if(fs.existsSync(ROOTDIR + 'tasks/' + task.tid)){
+  if (fs.existsSync(ROOTDIR + 'tasks/' + task.tid)) {
     deleteFolderRecursive(ROOTDIR + 'tasks/' + task.tid);
-    task.log = task.log + "remove  " + ROOTDIR + 'tasks/'  + task.tid + "\n";
+    task.log = task.log + 'remove  ' + ROOTDIR + 'tasks/'  + task.tid + '\n';
   }
 
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
-  task.log = task.log + "mkdir  " + ROOTDIR + 'tasks/'  + task.tid + "\n";
+  task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '\n';
 
   exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget ' + task.url, function(error, stdout, stderr) {
     if (error) {
@@ -162,16 +162,16 @@ const initTask = function(task){
     } else {
       debug.debug('[%s] File downloaded', task.tid);
     }
-    task.log = task.log + "Download  " + task.url + "\n";
+    task.log = task.log + 'Download  ' + task.url + '\n';
     task.log = task.log + stdout + stderr;
   });
 }
 
 const deleteFolderRecursive = function(path) {
-  if( fs.existsSync(path) ) {
-    fs.readdirSync(path).forEach(function(file,index){
-      var curPath = path + "/" + file;
-      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach(function(file,index) {
+      var curPath = path + '/' + file;
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
         deleteFolderRecursive(curPath);
       } else { // delete file
         fs.unlinkSync(curPath);

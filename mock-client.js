@@ -162,13 +162,43 @@ const initTask = function(task) {
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid);
   task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '\n';
 
+  fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid + '/result');
+  task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '/result' + '\n';
+
   exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget -q' + task.url, function(error, stdout, stderr) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);
+      // TODO. 
+      // - mark task as failed. 
+      // - Upload log.
+      //  Stop timer. 
+      //requestTask();
     } else {
       debug.debug('[%s] File downloaded', task.tid);
       task.log = task.log + 'Downloaded  ' + task.url + '\n';
+      runMock(task);
+    }
+  });
+}
+
+const runMock(task) {
+
+  exec('mock ' + process.env.MOCK_OPTIONS
+    + ' -r ' + process.env.MOCK_CONFIG
+    + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url)
+    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' ,
+  function(error, stdout, stderr) {
+    if (error) {
+      debug.log('TaskID %s Failed.', task.tid);
+      debug.log(stdout + stderr);
+      // TODO. 
+      // - mark task as failed. 
+      // - Upload log.
+      //  Stop timer. 
+      //requestTask();
+    } else {
+      console.log(stdout + stderr)
     }
   });
 }

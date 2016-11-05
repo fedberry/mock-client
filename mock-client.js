@@ -49,8 +49,12 @@ function initService(error, stdout, stderr) {
 
   if (!mcluster.isMaster) {
     // Switch to user mockclient
+    process.setgroups(['mock']);
+    debug.debug('Groups: %', JSON.stringify(process.getgroups(), null, 2));
     process.setgid('mock');
+    debug.debug('GID: %', process.getgid());
     process.setuid('mockclient');
+    debug.debug('UID: %', process.getuid());
 
 
     mockServer = new RestClient({

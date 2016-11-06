@@ -130,7 +130,36 @@ const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
   var reportTaskRequest = {
     method: 'update',
-    log: task.log
+    log: task.log.toString('base64'),
+    mock: {
+      build: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/build.log' ).toString('base64'),
+      root: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/root.log').toString('base64'),
+      state: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/state.log').toString('base64')
+    }
+  }
+  debug.debug('Update task request: %s', JSON.stringify(reportTaskRequest, null, 2));
+
+  mockServer.put(task.tid, token, reportTaskRequest, function(err, serverAnswer) {
+    if (err) {
+      console.log('---');
+      console.log(err);
+      console.log(err.stack);
+    }
+    console.log(serverAnswer);
+  });
+}
+
+const reportFinishedTask = function(task, status) {
+  debug.log('Report Finished Task %s.', JSON.stringify(task, null, 2));
+  var reportTaskRequest = {
+    method: 'finished',
+    status: status,
+    log: task.log.toString('base64'),
+    mock: {
+      build: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/build.log' ).toString('base64'),
+      root: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/root.log').toString('base64'),
+      state: fs.readFileSync(ROOTDIR + 'tasks/' + task.tid + '/result/state.log').toString('base64')
+    }
   }
   debug.debug('Update task request: %s', JSON.stringify(reportTaskRequest, null, 2));
 
@@ -147,7 +176,7 @@ const reportTask = function(task) {
 const initTask = function(task) {
   if (!fs.existsSync(ROOTDIR + 'tasks')) {
     fs.mkdirSync(ROOTDIR + 'tasks');
-    task.log = task.log + 'mkdir ' + ROOTDIR + 'tasks'  + task.tid + '\n';
+    task.log = task.log + 'mkdir ' + ROOTDIR + 'tasks' + '\n';
   }
 
   if (fs.existsSync(ROOTDIR + 'tasks/' + task.tid)) {
@@ -169,6 +198,7 @@ const initTask = function(task) {
       // - mark task as failed.
       // - Upload log.
       //  Stop timer.
+      clearInterval(task.reportInterval);
       //requestTask();
     } else {
       debug.debug('[%s] File downloaded', task.tid);
@@ -187,6 +217,11 @@ const runMock = function(task) {
     '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
   ]);
 
+  task.log = task.log +  'mock' + process.env.MOCK_OPTIONS
+    + ' -r ', process.env.MOCK_CONFIG
+    + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url)
+    + ' --resultdir '+ ROOTDIR + 'tasks/' + task.tid + '/result';
+
   mockRun.stdout.on('data', function(data) {
     console.log('stdout: %s', data);
     task.log = task.log + 'stdout: ' + data;
@@ -201,8 +236,16 @@ const runMock = function(task) {
   mockRun.on('close', function(code) {
     console.log('child process exited with code %s', code);
     task.log = task.log + 'Mock finished with code: ' + code;
-  });
+    clearInterval(task.reportInterval);
 
+    if(code == 0) {
+      reportFinishedTask(task, 'success');
+    } else {
+      reportFinishedTask(task, 'failure');
+    }
+
+    requestTask();
+  });
 }
 
 const deleteFolderRecursive = function(path) {

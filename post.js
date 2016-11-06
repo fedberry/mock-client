@@ -35,20 +35,14 @@ const sendFile = function(file){
   var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
   console.log(" POST to: " + url);
 
-  var multipart = [
-    {
-      'content-type': 'application/x-redhat-package-manager',
-      filename: require('path').basename(file),
-      body: fs.readFileSync(file)
-    }
-  ];
-
   var headers = {
     token: 'nwgrbhrbjwekhjetb',
-    'User-Agent': 'RestClient.' + process.env.npm_package_version
+    'User-Agent': 'RestClient.' + process.env.npm_package_version,
+    'content-type': 'application/x-redhat-package-manager',
+    filename: require('path').basename(file),
   }
 
-  request.post({url:url, multipart: multipart, headers: headers}, function optionalCallback(err, httpResponse, body) {
+  request.post({url:url, body: fs.readFileSync(file), headers: headers}, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

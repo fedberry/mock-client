@@ -123,9 +123,11 @@ const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
   var reportTaskRequest = {
     method: 'update',
-    log: task.log.toString('base64'),
     mock: {}
   }
+
+  var buffer = new Buffer(task.log);
+  reportTaskRequest.log = buffer.toString('base64');
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
   if(fs.existsSync(build_log)) {
@@ -159,9 +161,11 @@ const reportFinishedTask = function(task, status) {
   var reportTaskRequest = {
     method: 'finished',
     status: status,
-    log: task.log.toString('base64'),
     mock: {}
   }
+
+  var buffer = new Buffer(task.log);
+  reportTaskRequest.log = buffer.toString('base64');
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
   if(fs.existsSync(build_log)) {

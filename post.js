@@ -40,14 +40,13 @@ const sendFile = function(file){
   ];
 
   var formData = {
-    custom_file: {
-      value: fs.createReadStream(file),
+    rpm_file: {
+      value: fs.readFileSync(file),
       options: {
         filename: require('path').basename(file),
         contentType: 'application/x-redhat-package-manager'
       }
     }
-    custom_file: fs.readFileSync(file)
   };
 
   var headers = {

@@ -16,6 +16,7 @@ const spawn = require('child_process').spawn;
 const ROOTDIR = '/home/mockclient/';
 const request = require('request');
 const http = require('http');
+const path = require('path');
 
 // Debug module.
 const debugF = require('debug');
@@ -237,7 +238,7 @@ const initTask = function(task) {
 
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid + '/result');
   task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '/result' + '\n';
-  var fileName = fs.basename(task.url);
+  var fileName = path.basename(task.url);
   var fullFilePath = ROOTDIR + 'tasks/' + task.tid + '/' + fileName
 
   downloadSRPM(task.url,fullFilePath, function(err) {
@@ -259,7 +260,7 @@ const runMock = function(task) {
   var options = process.env.MOCK_OPTIONS.split(' ');
   var options2 = [
     '-r', process.env.MOCK_CONFIG,
-    '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url),
+    '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + path.basename(task.url),
     '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
   ]
   const mockRun = spawn('mock', options2.concat(options));
@@ -268,7 +269,7 @@ const runMock = function(task) {
 
   task.log = task.log +  'mock' + process.env.MOCK_OPTIONS
     + ' -r ', process.env.MOCK_CONFIG
-    + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url)
+    + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + path.basename(task.url)
     + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result';
 
   mockRun.stdout.on('data', function(data) {
@@ -342,7 +343,7 @@ const sendFile = function(task, file) {
     token: token,
     'User-Agent': 'RestClient.' + process.env.npm_package_version,
     'content-type': 'application/x-redhat-package-manager',
-    filename: require('path').basename(file),
+    filename: path.basename(file),
   }
 
   request({

@@ -47,30 +47,36 @@ function initService(error, stdout, stderr) {
       URL: process.env.MOCK_SERVER + '/api/auth',
       secureKey: process.env.SECRET
     });
-
-    debug.log('Requesting token.');
-
-    var tokenRequest = {
-      method: 'token',
-      identificationID: identificationID,
-      arch:  arch
-    }
-
-    debug.debug('Token request: %s', JSON.stringify(tokenRequest, null, 2));
-
-    mockServer.post(tokenRequest, function(err, serverAnswer) {
-      if (err) {
-        console.log('---');
-        console.log(err);
-        console.log(err.stack);
-      } else {
-        mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
-        token = serverAnswer.token;
-        tokenExpire = serverAnswer.expire;
-        requestTask();
-      }
+    requestToken(function(answer){
+      token = serverAnswer.token;
+      tokenExpire = serverAnswer.expire;
+      requestTask();
     });
   }
+}
+
+const requestToken = function(callback){
+  debug.log('Requesting token.');
+
+  var tokenRequest = {
+    method: 'token',
+    identificationID: identificationID,
+    arch:  arch
+  }
+
+  debug.debug('Token request: %s', JSON.stringify(tokenRequest, null, 2));
+
+  mockServer.settings.URL = process.env.MOCK_SERVER + '/api/auth';
+  mockServer.post(tokenRequest, function(err, serverAnswer) {
+    if (err) {
+      console.log('---');
+      console.log(err);
+      console.log(err.stack);
+      requestToken(callback);
+    } else {
+      callback(serverAnswer);
+    }
+  });
 }
 
 const requestTask = function() {
@@ -79,6 +85,9 @@ const requestTask = function() {
     identificationID: identificationID,
     arch:  arch
   }
+
+  mockServer.settings.URL = process.env.MOCK_SERVER + '/api/task';
+
   debug.debug('Task request: %s', JSON.stringify(taskRequest, null, 2));
   mockServer.search(taskRequest, function(err, serverAnswer) {
     if (err) {
@@ -111,6 +120,7 @@ const takeTask = function(task) {
       console.log('---');
       console.log(err);
       console.log(err.stack);
+      setTimeout(requestTask, 5000);
     } else {
       debug.debug('Take answer %s', JSON.stringify(serverAnswer, null, 2));
       task.reportInterval = setInterval(reportTask, 2000, task);
@@ -216,12 +226,9 @@ const initTask = function(task) {
     if (error) {
       debug.log('TaskID %s Failed.', task.tid);
       debug.log(stdout + stderr);
-      // TODO.
-      // - mark task as failed.
-      // - Upload log.
-      //  Stop timer.
+      reportFinishedTask(task, 'failure');
       clearInterval(task.reportInterval);
-      //requestTask();
+      setTimeout(requestTask, 5000);
     } else {
       debug.debug('[%s] File downloaded', task.tid);
       task.log = task.log + 'Downloaded  ' + task.url + '\n';
@@ -270,7 +277,7 @@ const runMock = function(task) {
       reportFinishedTask(task, 'failure');
     }
 
-    requestTask();
+    setTimeout(requestTask, 5000);
   });
 }
 

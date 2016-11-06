@@ -43,7 +43,11 @@ const sendFile = function(file){
       }
     }
   };
-  request.post({url:url, formData: formData}, function optionalCallback(err, httpResponse, body) {
+  var headers = {
+    token: 'nwgrbhrbjwekhjetb',
+    'User-Agent': 'RestClient.' + process.env.npm_package_version
+  }
+  request.post({url:url, formData: formData, headers: headers}, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

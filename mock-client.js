@@ -130,19 +130,19 @@ const reportTask = function(task) {
   var buffer = new Buffer(task.log);
   reportTaskRequest.log = buffer.toString('base64');
 
-  var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if (fs.existsSync(build_log)) {
-    reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
+  var buildLog = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
+  if (fs.existsSync(buildLog)) {
+    reportTaskRequest.mock.build = fs.readFileSync(buildLog).toString('base64');
   }
 
-  var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if (fs.existsSync(root_log)) {
-    reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
+  var rootLog = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
+  if (fs.existsSync(rootLog)) {
+    reportTaskRequest.mock.root = fs.readFileSync(rootLog).toString('base64');
   }
 
-  var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if (fs.existsSync(state_log)) {
-    reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
+  var stateLog = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
+  if (fs.existsSync(stateLog)) {
+    reportTaskRequest.mock.state = fs.readFileSync(stateLog).toString('base64');
   }
 
   debug.debug('Update task request: %s', JSON.stringify(reportTaskRequest, null, 2));
@@ -168,19 +168,19 @@ const reportFinishedTask = function(task, status) {
   var buffer = new Buffer(task.log);
   reportTaskRequest.log = buffer.toString('base64');
 
-  var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if (fs.existsSync(build_log)) {
-    reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
+  var buildLog = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
+  if (fs.existsSync(buildLog)) {
+    reportTaskRequest.mock.build = fs.readFileSync(buildLog).toString('base64');
   }
 
-  var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if (fs.existsSync(root_log)) {
-    reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
+  var rootLog = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
+  if (fs.existsSync(rootLog)) {
+    reportTaskRequest.mock.root = fs.readFileSync(rootLog).toString('base64');
   }
 
-  var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if (fs.existsSync(state_log)) {
-    reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
+  var stateLog = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
+  if (fs.existsSync(stateLog)) {
+    reportTaskRequest.mock.state = fs.readFileSync(stateLog).toString('base64');
   }
 
   debug.debug('Update task request: %s', JSON.stringify(reportTaskRequest, null, 2));

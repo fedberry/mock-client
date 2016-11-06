@@ -25,6 +25,7 @@ function postFromDir(startPath,filter){
       if(filter.test(filename)) {
         sendFile(filename);
       };
+    };
   };
 };
 

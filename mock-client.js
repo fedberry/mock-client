@@ -15,6 +15,7 @@ const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const ROOTDIR = '/home/mockclient/';
 const request = require('request');
+const http = require('http');
 
 // Debug module.
 const debugF = require('debug');
@@ -205,6 +206,21 @@ const reportFinishedTask = function(task, status) {
   });
 }
 
+const downloadSRPM = function(url, dest, cb) {
+  var file = fs.createWriteStream(dest);
+  var request = http.get(url, function(response) {
+    response.pipe(file);
+    file.on('finish', function() {
+      file.close(cb);
+    });
+  }).on('error', function(err) {
+    fs.unlink(dest);
+    if (cb) {
+      cb(err);
+    }
+  });
+};
+
 const initTask = function(task) {
   if (!fs.existsSync(ROOTDIR + 'tasks')) {
     fs.mkdirSync(ROOTDIR + 'tasks');
@@ -221,21 +237,22 @@ const initTask = function(task) {
 
   fs.mkdirSync(ROOTDIR + 'tasks/' + task.tid + '/result');
   task.log = task.log + 'mkdir  ' + ROOTDIR + 'tasks/'  + task.tid + '/result' + '\n';
+  var fileName = fs.basename(task.url);
+  var fullFilePath = ROOTDIR + 'tasks/' + task.tid + '/' + fileName
 
-  exec('cd ' + ROOTDIR + 'tasks/' + task.tid + ' && wget -q ' + task.url, function(error, stdout, stderr) {
-    if (error) {
-      debug.log('TaskID %s Failed.', task.tid);
-      debug.log(stdout + stderr);
+  downloadSRPM(task.url,fullFilePath, function(err) {
+    if (err) {
+      debug.log('Failed to download %s Failed.', task.url);
       reportFinishedTask(task, 'failure');
       clearInterval(task.reportInterval);
       setTimeout(requestTask, 5000);
-    } else {
+    }else {
       debug.debug('[%s] File downloaded', task.tid);
       task.log = task.log + 'Downloaded  ' + task.url + '\n';
       console.log(stdout + stderr);
       runMock(task);
     }
-  });
+  })
 }
 
 const runMock = function(task) {

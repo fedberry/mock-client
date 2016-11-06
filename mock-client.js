@@ -47,7 +47,7 @@ function initService(error, stdout, stderr) {
       URL: process.env.MOCK_SERVER + '/api/auth',
       secureKey: process.env.SECRET
     });
-    requestToken(function(answer){
+    requestToken(function(answer) {
       token = serverAnswer.token;
       tokenExpire = serverAnswer.expire;
       requestTask();
@@ -55,7 +55,7 @@ function initService(error, stdout, stderr) {
   }
 }
 
-const requestToken = function(callback){
+const requestToken = function(callback) {
   debug.log('Requesting token.');
 
   var tokenRequest = {

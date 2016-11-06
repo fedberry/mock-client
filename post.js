@@ -12,8 +12,6 @@ const request = require('request');
 
 const ROOTDIR = '/home/mockclient/';
 
-postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/)
-
 const postFromDir = function (startPath,filter){
   if (!fs.existsSync(startPath)){
       console.log("no dir ",startPath);
@@ -36,4 +34,21 @@ const sendFile = function(file){
   console.log('Found: ' + file);
   var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
   console.log(" POST to: " + url);
+  var formData = {
+    custom_file: {
+      value: fs.createReadStream(file),
+      options: {
+        filename: require('path').basename(file),
+        contentType: 'application/x-redhat-package-manager'
+      }
+    }
+  };
+  request.post({url:url, formData: formData}, function optionalCallback(err, httpResponse, body) {
+    if (err) {
+      return console.error('upload failed:', err);
+    }
+    console.log('Upload successful!  Server responded with:', body);
+  });
 }
+
+postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/);

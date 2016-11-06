@@ -7,6 +7,9 @@ const taskId = 2;
 
 const fs = require('fs');
 require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
+const request = require('request');
+
+
 const ROOTDIR = '/home/mockclient/';
 
 postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/)
@@ -19,7 +22,7 @@ function postFromDir(startPath,filter){
 
   var files = fs.readdirSync(startPath);
   for(var i=0; i<files.length; i++){
-    var filename = path.join(startPath,files[i]);
+    var filename = startPath + '/' + files[i];
     var stat = fs.lstatSync(filename);
     if (stat.isFile()){
       if(filter.test(filename)) {
@@ -31,4 +34,6 @@ function postFromDir(startPath,filter){
 
 const sendFile = function(file){
   console.log('Found: ' + file);
+  var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
+  console.log(" POST to: " + url);
 }

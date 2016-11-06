@@ -7,7 +7,7 @@
     "test": "node_modules/.bin/mocha --timeout 15000",
     "start": "DEBUG=mock-client:log,cluster:* node  --max-old-space-size=48 mock-client.js >> `cat .env|grep LOGFILE|awk -F= {'print$2'}` 2>&1 &",
     "stop": "cat `cat .env|grep PIDFILE|awk -F= {'print$2'}` |xargs kill -2  2>&1 &",
-    "jscs": "jscs --fix mock-client.js includes/*.js",
+    "jscs": "jscs --fix *.js includes/*.js",
     "devel-start": "DEBUG=* node  --max-old-space-size=48 mock-client.js"
   },
   "repository": {

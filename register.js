@@ -34,7 +34,7 @@ function sendRegisterRequest(error, stdout, stderr) {
       console.log(err);
       console.log(err.stack);
     } else {
-      if(!taskAnswer.error) {
+      if (!taskAnswer.error) {
         DotEnv.set('SECRET', taskAnswer.secret, {path: '/etc/mock-client/mock-client.config'});
         DotEnv.set('IDENTIFICATION_ID', identificationID, {path: '/etc/mock-client/mock-client.config'});
       }

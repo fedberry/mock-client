@@ -131,17 +131,17 @@ const reportTask = function(task) {
   reportTaskRequest.log = buffer.toString('base64');
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if(fs.existsSync(build_log)) {
+  if (fs.existsSync(build_log)) {
     reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
   }
 
   var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if(fs.existsSync(root_log)) {
+  if (fs.existsSync(root_log)) {
     reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
   }
 
   var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if(fs.existsSync(state_log)) {
+  if (fs.existsSync(state_log)) {
     reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
   }
 
@@ -169,17 +169,17 @@ const reportFinishedTask = function(task, status) {
   reportTaskRequest.log = buffer.toString('base64');
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if(fs.existsSync(build_log)) {
+  if (fs.existsSync(build_log)) {
     reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
   }
 
   var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if(fs.existsSync(root_log)) {
+  if (fs.existsSync(root_log)) {
     reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
   }
 
   var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if(fs.existsSync(state_log)) {
+  if (fs.existsSync(state_log)) {
     reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
   }
 
@@ -232,7 +232,7 @@ const initTask = function(task) {
 }
 
 const runMock = function(task) {
-  var options = process.env.MOCK_OPTIONS.split(" ");
+  var options = process.env.MOCK_OPTIONS.split(' ');
   var options2 = [
     '-r', process.env.MOCK_CONFIG,
     '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url),
@@ -245,7 +245,7 @@ const runMock = function(task) {
   task.log = task.log +  'mock' + process.env.MOCK_OPTIONS
     + ' -r ', process.env.MOCK_CONFIG
     + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url)
-    + ' --resultdir '+ ROOTDIR + 'tasks/' + task.tid + '/result';
+    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result';
 
   mockRun.stdout.on('data', function(data) {
     console.log('stdout: %s', data);
@@ -263,7 +263,7 @@ const runMock = function(task) {
     task.log = task.log + 'Mock finished with code: ' + code;
     clearInterval(task.reportInterval);
 
-    if(code == 0) {
+    if (code == 0) {
       postResultRPMs(task);
       reportFinishedTask(task, 'success');
     } else {
@@ -288,31 +288,31 @@ const deleteFolderRecursive = function(path) {
   }
 };
 
-const postResultRPMs = function (task){
+const postResultRPMs = function(task) {
   var startPath = ROOTDIR + 'tasks/' + task.tid + '/result';
   var filter = /\.rpm$/;
 
-  if (!fs.existsSync(startPath)){
-      console.log("no dir ",startPath);
-      return;
+  if (!fs.existsSync(startPath)) {
+    console.log('no dir ',startPath);
+    return;
   }
 
   var files = fs.readdirSync(startPath);
-  for(var i=0; i<files.length; i++){
+  for (var i = 0; i < files.length; i++) {
     var filename = startPath + '/' + files[i];
     var stat = fs.lstatSync(filename);
-    if (stat.isFile()){
-      if(filter.test(filename)) {
+    if (stat.isFile()) {
+      if (filter.test(filename)) {
         sendFile(task, filename);
       };
     };
   };
 };
 
-const sendFile = function(task, file){
+const sendFile = function(task, file) {
   console.log('Found: ' + file);
   var url = process.env.MOCK_SERVER + '/api/task/' + task.tid;
-  console.log(" POST to: " + url);
+  console.log(' POST to: ' + url);
 
   var headers = {
     token: token,
@@ -323,10 +323,10 @@ const sendFile = function(task, file){
 
   request({
     method: 'POST',
-    url:url,
+    url: url,
     body: fs.readFileSync(file),
     headers: headers
-    }, function optionalCallback(err, httpResponse, body) {
+  }, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

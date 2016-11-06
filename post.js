@@ -36,7 +36,8 @@ const sendFile = function(file){
   console.log(" POST to: " + url);
 
   var multipart = [
-    { content-type: 'application/x-redhat-package-manager',
+    {
+      'content-type': 'application/x-redhat-package-manager',
       filename: require('path').basename(file),
       body: fs.readFileSync(file)
     }

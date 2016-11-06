@@ -48,8 +48,8 @@ function initService(error, stdout, stderr) {
       secureKey: process.env.SECRET
     });
     requestToken(function(answer) {
-      token = serverAnswer.token;
-      tokenExpire = serverAnswer.expire;
+      token = answer.token;
+      tokenExpire = answer.expire;
       requestTask();
     });
   }

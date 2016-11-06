@@ -42,7 +42,12 @@ const sendFile = function(file){
     filename: require('path').basename(file),
   }
 
-  request.post({url:url, body: fs.readFileSync(file), headers: headers}, function optionalCallback(err, httpResponse, body) {
+  request({
+    method: 'POST',
+    url:url,
+    body: fs.readFileSync(file),
+    headers: headers
+    }, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

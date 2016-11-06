@@ -128,17 +128,17 @@ const reportTask = function(task) {
   }
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if(fs.lstatSync(build_log)) {
+  if(fs.existsSync(build_log)) {
     reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
   }
 
   var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if(fs.lstatSync(root_log)) {
+  if(fs.existsSync(root_log)) {
     reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
   }
 
   var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if(fs.lstatSync(state_log)) {
+  if(fs.existsSync(state_log)) {
     reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
   }
 
@@ -164,17 +164,17 @@ const reportFinishedTask = function(task, status) {
   }
 
   var build_log = ROOTDIR + 'tasks/' + task.tid + '/result/build.log';
-  if(fs.lstatSync(build_log)) {
+  if(fs.existsSync(build_log)) {
     reportTaskRequest.mock.build = fs.readFileSync(build_log).toString('base64');
   }
 
   var root_log = ROOTDIR + 'tasks/' + task.tid + '/result/root.log';
-  if(fs.lstatSync(root_log)) {
+  if(fs.existsSync(root_log)) {
     reportTaskRequest.mock.root = fs.readFileSync(root_log).toString('base64');
   }
 
   var state_log = ROOTDIR + 'tasks/' + task.tid + '/result/state.log';
-  if(fs.lstatSync(state_log)) {
+  if(fs.existsSync(state_log)) {
     reportTaskRequest.mock.state = fs.readFileSync(state_log).toString('base64');
   }
 

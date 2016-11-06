@@ -263,7 +263,7 @@ const runMock = function(task) {
     clearInterval(task.reportInterval);
 
     if(code == 0) {
-      postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/);
+      postResultRPMs(task);
       reportFinishedTask(task, 'success');
     } else {
       reportFinishedTask(task, 'failure');
@@ -287,7 +287,10 @@ const deleteFolderRecursive = function(path) {
   }
 };
 
-const postFromDir = function (startPath,filter){
+const postResultRPMs = function (task){
+  var startPath = ROOTDIR + 'tasks/' + task.tid + '/result';
+  var filter = /\.rpm$/;
+
   if (!fs.existsSync(startPath)){
       console.log("no dir ",startPath);
       return;
@@ -299,19 +302,19 @@ const postFromDir = function (startPath,filter){
     var stat = fs.lstatSync(filename);
     if (stat.isFile()){
       if(filter.test(filename)) {
-        sendFile(filename);
+        sendFile(task, filename);
       };
     };
   };
 };
 
-const sendFile = function(file){
+const sendFile = function(task, file){
   console.log('Found: ' + file);
-  var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
+  var url = process.env.MOCK_SERVER + '/api/task/' + task.tid;
   console.log(" POST to: " + url);
 
   var headers = {
-    token: 'nwgrbhrbjwekhjetb',
+    token: token,
     'User-Agent': 'RestClient.' + process.env.npm_package_version,
     'content-type': 'application/x-redhat-package-manager',
     filename: require('path').basename(file),

@@ -15,7 +15,6 @@ const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const ROOTDIR = '/home/mockclient/';
 const request = require('request');
-const http = require('http');
 const path = require('path');
 
 // Debug module.
@@ -208,16 +207,21 @@ const reportFinishedTask = function(task, status) {
 }
 
 const downloadSRPM = function(url, dest, cb) {
-  var file = fs.createWriteStream(dest);
-  var request = http.get(url, function(response) {
-    response.pipe(file);
-    file.on('finish', function() {
-      file.close(cb);
-    });
-  }).on('error', function(err) {
-    fs.unlink(dest);
-    if (cb) {
-      cb(err);
+  request(url, function(error, response, body) {
+    if (error) {
+      cb(error)
+    } else {
+      if (response.statusCode !== 200) {
+        cb(true);
+      } else {
+        fs.writeFile(dest, body, function(err) {
+          if (err) {
+            cb(err);
+          }else {
+            cb();
+          }
+        });
+      }
     }
   });
 };

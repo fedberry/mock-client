@@ -28,6 +28,6 @@ function postFromDir(startPath,filter){
   };
 };
 
-const sendFile(file){
+const sendFile = function(file){
   console.log('Found: ' + file);
 }

@@ -15,15 +15,7 @@ let mockServer = new RestClient({
   URL: process.env.MOCK_SERVER + '/api/auth'
 });
 
-const netInterfaces = require('os').networkInterfaces();
-const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
-
-var mac = '';
-if(!interfaceInfo.mac){
-  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
-} else {
-  mac = interfaceInfo.mac;
-}
+var identificationID = require('crypto').randomBytes(20).toString('hex');
 
 exec('arch', sendRegisterRequest) ;
 
@@ -31,7 +23,7 @@ function sendRegisterRequest(error, stdout, stderr) {
   var arch = stdout.toString().trim();
   var authRequest = {
     method: 'register',
-    MAC: mac,
+    identificationID: identificationID,
     arch: arch
   }
   console.log(authRequest);
@@ -44,8 +36,9 @@ function sendRegisterRequest(error, stdout, stderr) {
     } else {
       if(!taskAnswer.error) {
         DotEnv.set('SECRET', taskAnswer.secret, {path: '/etc/mock-client/mock-client.config'});
+        DotEnv.set('identificationID', identificationID, {path: '/etc/mock-client/mock-client.config'});
       }
-      console.log('Agent registered. MAC:' + mac + ' ARCH:' + arch)
+      console.log('Agent registered. identificationID:' + identificationID + ' ARCH:' + arch)
     }
   });
 }

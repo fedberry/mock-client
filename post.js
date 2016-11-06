@@ -34,14 +34,17 @@ const sendFile = function(file){
   console.log('Found: ' + file);
   var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
   console.log(" POST to: " + url);
-  var formData = {
-    custom_file: fs.createReadStream(file)
-  };
+
+  var multipart = [
+    { body: fs.createReadStream(file) }
+  ];
+
   var headers = {
     token: 'nwgrbhrbjwekhjetb',
     'User-Agent': 'RestClient.' + process.env.npm_package_version
   }
-  request.post({url:url, formData: formData, headers: headers}, function optionalCallback(err, httpResponse, body) {
+
+  request.post({url:url, multipart: multipart, headers: headers}, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

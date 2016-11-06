@@ -14,7 +14,7 @@ const ROOTDIR = '/home/mockclient/';
 
 postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/)
 
-function postFromDir(startPath,filter){
+const postFromDir = function (startPath,filter){
   if (!fs.existsSync(startPath)){
       console.log("no dir ",startPath);
       return;

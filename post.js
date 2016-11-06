@@ -35,13 +35,7 @@ const sendFile = function(file){
   var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
   console.log(" POST to: " + url);
   var formData = {
-    custom_file: {
-      value: fs.createReadStream(file),
-      options: {
-        filename: require('path').basename(file),
-        contentType: 'application/x-redhat-package-manager'
-      }
-    }
+    custom_file: fs.createReadStream(file)
   };
   var headers = {
     token: 'nwgrbhrbjwekhjetb',

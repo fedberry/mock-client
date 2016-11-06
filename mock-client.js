@@ -23,16 +23,9 @@ const debug = {
   debug: debugF('mock-client:debug')
 };
 
-const netInterfaces = require('os').networkInterfaces();
-const interfaceInfo = netInterfaces[process.env.INTERFACE].pop();
+var token, tokenExpire, arch, mockServer;
 
-var mac, token, tokenExpire, arch, mockServer;
-
-if (!interfaceInfo.mac) {
-  mac = fs.readFileSync('/sys/class/net/' + process.env.INTERFACE + '/address').toString().trim();
-} else {
-  mac = interfaceInfo.mac;
-}
+var identificationID = process.env.IDENTIFICATION_ID;
 
 exec('arch', initService) ;
 
@@ -58,7 +51,7 @@ function initService(error, stdout, stderr) {
 
     var tokenRequest = {
       method: 'token',
-      MAC: mac,
+      identificationID: identificationID,
       arch:  arch
     }
 
@@ -82,7 +75,7 @@ function initService(error, stdout, stderr) {
 const requestTask = function() {
 
   var taskRequest = {
-    MAC: mac,
+    identificationID: identificationID,
     arch:  arch
   }
   debug.debug('Task request: %s', JSON.stringify(taskRequest, null, 2));
@@ -239,6 +232,7 @@ const runMock = function(task) {
     clearInterval(task.reportInterval);
 
     if(code == 0) {
+      postFromDir(ROOTDIR + '/tasks/' + taskId + '/result', /\.rpm$/);
       reportFinishedTask(task, 'success');
     } else {
       reportFinishedTask(task, 'failure');
@@ -261,3 +255,46 @@ const deleteFolderRecursive = function(path) {
     fs.rmdirSync(path);
   }
 };
+
+const postFromDir = function (startPath,filter){
+  if (!fs.existsSync(startPath)){
+      console.log("no dir ",startPath);
+      return;
+  }
+
+  var files = fs.readdirSync(startPath);
+  for(var i=0; i<files.length; i++){
+    var filename = startPath + '/' + files[i];
+    var stat = fs.lstatSync(filename);
+    if (stat.isFile()){
+      if(filter.test(filename)) {
+        sendFile(filename);
+      };
+    };
+  };
+};
+
+const sendFile = function(file){
+  console.log('Found: ' + file);
+  var url = process.env.MOCK_SERVER + '/api/task/' + taskId;
+  console.log(" POST to: " + url);
+
+  var headers = {
+    token: 'nwgrbhrbjwekhjetb',
+    'User-Agent': 'RestClient.' + process.env.npm_package_version,
+    'content-type': 'application/x-redhat-package-manager',
+    filename: require('path').basename(file),
+  }
+
+  request({
+    method: 'POST',
+    url:url,
+    body: fs.readFileSync(file),
+    headers: headers
+    }, function optionalCallback(err, httpResponse, body) {
+    if (err) {
+      return console.error('upload failed:', err);
+    }
+    console.log('Upload successful!  Server responded with:', body);
+  });
+}

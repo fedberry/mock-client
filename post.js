@@ -36,7 +36,7 @@ const sendFile = function(file){
   console.log(" POST to: " + url);
 
   var multipart = [
-    { body: fs.createReadStream(file) }
+    { body: fs.readFileSync(file) }
   ];
 
   var headers = {

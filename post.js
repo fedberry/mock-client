@@ -39,12 +39,23 @@ const sendFile = function(file){
     { body: fs.readFileSync(file) }
   ];
 
+  var formData = {
+    custom_file: {
+      value: fs.createReadStream(file),
+      options: {
+        filename: require('path').basename(file),
+        contentType: 'application/x-redhat-package-manager'
+      }
+    }
+    custom_file: fs.readFileSync(file)
+  };
+
   var headers = {
     token: 'nwgrbhrbjwekhjetb',
     'User-Agent': 'RestClient.' + process.env.npm_package_version
   }
 
-  request.post({url:url, multipart: multipart, headers: headers}, function optionalCallback(err, httpResponse, body) {
+  request.post({url:url, formData: formData, headers: headers}, function optionalCallback(err, httpResponse, body) {
     if (err) {
       return console.error('upload failed:', err);
     }

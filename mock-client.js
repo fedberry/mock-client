@@ -14,6 +14,7 @@ require('dotenv-save').config({path: '/etc/mock-client/mock-client.config'});
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const ROOTDIR = '/home/mockclient/';
+const request = require('request');
 
 // Debug module.
 const debugF = require('debug');

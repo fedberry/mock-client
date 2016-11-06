@@ -214,13 +214,17 @@ const downloadSRPM = function(url, dest, cb) {
       if (response.statusCode !== 200) {
         cb(true);
       } else {
-        fs.writeFile(dest, body, function(err) {
-          if (err) {
-            cb(err);
-          }else {
-            cb();
-          }
-        });
+        if(response.headers['content-type'] != 'application/x-rpm') {
+          cb(true);
+        }else {
+          fs.writeFile(dest, body, function(err) {
+            if (err) {
+              cb(err);
+            }else {
+              cb();
+            }
+          });
+        }
       }
     }
   });

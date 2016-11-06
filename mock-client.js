@@ -227,12 +227,15 @@ const initTask = function(task) {
 }
 
 const runMock = function(task) {
-  const mockRun = spawn('mock', [
-    process.env.MOCK_OPTIONS,
+  var options = process.env.MOCK_OPTIONS.split(" ");
+  var options2 = [
     '-r', process.env.MOCK_CONFIG,
     '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + require('path').basename(task.url),
     '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
-  ]);
+  ]
+  const mockRun = spawn('mock', options2.concat(options));
+
+  debug.debug('Token request: %s', JSON.stringify(options2.concat(options), null, 2));
 
   task.log = task.log +  'mock' + process.env.MOCK_OPTIONS
     + ' -r ', process.env.MOCK_CONFIG

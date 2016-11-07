@@ -280,10 +280,10 @@ const runMock = function(task) {
 
   debug.debug('Token request: %s', JSON.stringify(options2.concat(options), null, 2));
 
-  task.log = task.log +  'mock' + process.env.MOCK_OPTIONS
-    + ' -r ', process.env.MOCK_CONFIG
+  task.log = task.log +  'mock ' + process.env.MOCK_OPTIONS
+    + ' -r ' + process.env.MOCK_CONFIG
     + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + path.basename(task.url)
-    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result';
+    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' + "\n";
 
   mockRun.stdout.on('data', function(data) {
     console.log('stdout: %s', data);

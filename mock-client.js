@@ -253,6 +253,7 @@ const initTask = function(task) {
     if (err) {
       debug.log('Failed to download %s.', task.url);
       clearInterval(task.reportInterval);
+      task.reportInterval = false;
       reportFinishedTask(task, 'failure');
       setTimeout(requestTask, 5000);
     }else {

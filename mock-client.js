@@ -31,6 +31,9 @@ var identificationID = process.env.IDENTIFICATION_ID;
 
 exec('arch', initService) ;
 
+/**
+ * Main function. Speenup cluster, collect new token and start request cycle.
+ */
 function initService(error, stdout, stderr) {
   arch = stdout.toString().trim();
   var count = 1;
@@ -56,6 +59,9 @@ function initService(error, stdout, stderr) {
   }
 }
 
+/**
+ * Request token.
+ */
 const requestToken = function(callback) {
   debug.log('Requesting token.');
 
@@ -80,6 +86,9 @@ const requestToken = function(callback) {
   });
 }
 
+/**
+ * Search for available tasks.
+ */
 const requestTask = function() {
 
   var taskRequest = {
@@ -107,6 +116,9 @@ const requestTask = function() {
 
 }
 
+/**
+ * Ask to delegate a task.
+ */
 const takeTask = function(task) {
 
   // Init task log.
@@ -132,6 +144,9 @@ const takeTask = function(task) {
 
 }
 
+/**
+ * Report task status each 2 sec via rest API.
+ */
 const reportTask = function(task) {
   debug.log('Report Task %s.', JSON.stringify(task, null, 2));
   var reportTaskRequest = {
@@ -169,6 +184,9 @@ const reportTask = function(task) {
   });
 }
 
+/**
+ * Report task status via restAPI.
+ */
 const reportFinishedTask = function(task, status) {
   debug.log('Report Finished Task %s.', JSON.stringify(task, null, 2));
   var reportTaskRequest = {
@@ -207,6 +225,9 @@ const reportFinishedTask = function(task, status) {
   });
 }
 
+/**
+ * Download provided SRPM.
+ */
 const downloadSRPM = function(url, dest, cb) {
   request({
     url: url,
@@ -235,6 +256,9 @@ const downloadSRPM = function(url, dest, cb) {
   });
 };
 
+/**
+ * Init task procedure.
+ */
 const initTask = function(task) {
   if (!fs.existsSync(ROOTDIR + 'tasks')) {
     fs.mkdirSync(ROOTDIR + 'tasks');
@@ -270,6 +294,9 @@ const initTask = function(task) {
   })
 }
 
+/**
+ * Run Mock.
+ */
 const runMock = function(task) {
   var options = process.env.MOCK_OPTIONS.split(' ');
   var options2 = [
@@ -313,6 +340,9 @@ const runMock = function(task) {
   });
 }
 
+/**
+ * Recursively clean directory.
+ */
 const deleteFolderRecursive = function(path) {
   if (fs.existsSync(path)) {
     fs.readdirSync(path).forEach(function(file,index) {
@@ -327,6 +357,9 @@ const deleteFolderRecursive = function(path) {
   }
 };
 
+/**
+ * Find all rpms and call sendFile on each one.
+ */
 const postResultRPMs = function(task) {
   var startPath = ROOTDIR + 'tasks/' + task.tid + '/result';
   var filter = /\.rpm$/;
@@ -348,6 +381,9 @@ const postResultRPMs = function(task) {
   };
 };
 
+/**
+ * Send file via restAPI.
+ */
 const sendFile = function(task, file) {
   console.log('Found: ' + file);
   var url = process.env.MOCK_SERVER + '/api/task/' + task.tid;

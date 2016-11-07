@@ -180,7 +180,6 @@ const reportTask = function(task) {
       console.log(err);
       console.log(err.stack);
     }
-    console.log(serverAnswer);
   });
 }
 
@@ -221,7 +220,6 @@ const reportFinishedTask = function(task, status) {
       console.log(err);
       console.log(err.stack);
     }
-    console.log(serverAnswer);
   });
 }
 
@@ -314,18 +312,15 @@ const runMock = function(task) {
     + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' + "\n";
 
   mockRun.stdout.on('data', function(data) {
-    console.log('stdout: %s', data);
     task.log = task.log + 'stdout: ' + data;
   });
 
   mockRun.stderr.on('data', function(data) {
-    console.log('stderr: %s', data);
     task.log = task.log + 'stderr: ' + data;
 
   });
 
   mockRun.on('close', function(code) {
-    console.log('child process exited with code %s', code);
     task.log = task.log + 'Mock finished with code: ' + code;
     clearInterval(task.reportInterval);
 
@@ -365,7 +360,7 @@ const postResultRPMs = function(task) {
   var filter = /\.rpm$/;
 
   if (!fs.existsSync(startPath)) {
-    console.log('no dir ',startPath);
+    debug.log('no dir %s',startPath);
     return;
   }
 
@@ -385,9 +380,8 @@ const postResultRPMs = function(task) {
  * Send file via restAPI.
  */
 const sendFile = function(task, file) {
-  console.log('Found: ' + file);
   var url = process.env.MOCK_SERVER + '/api/task/' + task.tid;
-  console.log(' POST to: ' + url);
+  debug.log(' POST to: %s',url);
 
   var headers = {
     token: token,
@@ -403,8 +397,8 @@ const sendFile = function(task, file) {
     headers: headers
   }, function optionalCallback(err, httpResponse, body) {
     if (err) {
-      return console.error('upload failed:', err);
+      return debug.log('Upload failed: %s', err);
     }
-    console.log('Upload successful!  Server responded with:', body);
+    debug.log('Upload successful!  Server responded with: %s', body);
   });
 }

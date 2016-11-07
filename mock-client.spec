@@ -70,6 +70,7 @@ cp  config/fedberry-24-armv6l.cfg %{buildroot}/%{_sysconfdir}/mock/
 mkdir -p %{buildroot}/%{_sysconfdir}/mock-client
 cp  config/mock-client.config %{buildroot}/%{_sysconfdir}/mock-client/
 
+mkdir -p %{buildroot}%{_unitdir}
 cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 
 %nodejs_symlink_deps

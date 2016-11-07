@@ -95,6 +95,7 @@ const requestTask = function() {
       console.log('---');
       console.log(err);
       console.log(err.stack);
+      setTimeout(requestTask, 5000);
     } else {
       if (serverAnswer.task) {
         takeTask(serverAnswer.task);

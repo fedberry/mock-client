@@ -1,5 +1,5 @@
 Name:           mock-client
-Version:        0.1.1
+Version:        0.2.0
 Release:        1%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 
@@ -10,7 +10,11 @@ BuildArch:      noarch
 ExclusiveArch:  %{nodejs_arches} noarch
 
 BuildRequires:  nodejs-packaging
+BuildRequires:  systemd
 
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 Requires:       mock
 
 Requires(pre): /usr/sbin/useradd, /usr/bin/getent
@@ -21,10 +25,28 @@ Small and light nodejs based agent to run tasks from http://mock.fedberry.org
 
 
 %pre
-/usr/bin/getent passwd mockclient || /usr/sbin/useradd -r -d /home/mockclient -s /bin/bash mockclient -g mock
+/usr/bin/getent passwd mockclient || /usr/sbin/useradd -mNr -d /home/mockclient -s /bin/bash mockclient -g mock
+
+%post
+
+echo "Registering agent on http://mock.fedberry.org"
+/usr/bin/mock-client-register
+
+#init enviorment
+echo "Init fedberry-24-armv6l Env."
+su -l mockclient -c 'mock -r fedberry-24-armv6l --init'
+
+%systemd_post mock-client.service
+
+
+%preun
+%systemd_preun mock-client.service
 
 %postun
+%systemd_postun_with_restart mock-client.service
 /usr/sbin/userdel -fr mockclient
+
+
 
 %prep
 %setup -q -n mock-client-%{version}
@@ -48,6 +70,8 @@ cp  config/fedberry-24-armv6l.cfg %{buildroot}/%{_sysconfdir}/mock/
 mkdir -p %{buildroot}/%{_sysconfdir}/mock-client
 cp  config/mock-client.config %{buildroot}/%{_sysconfdir}/mock-client/
 
+cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
+
 %nodejs_symlink_deps
 
 
@@ -59,8 +83,20 @@ cp  config/mock-client.config %{buildroot}/%{_sysconfdir}/mock-client/
 %{_sysconfdir}/mock/fedberry-24-armv6l.cfg
 %{_sysconfdir}/mock-client
 %{_sysconfdir}/mock-client/mock-client.config
+%{_unitdir}/mock-client.service
 
 %changelog
+* Nov Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.0-1
+- Add service file and start service 
+- Speed up mock via no cache clean via fedberry-24-armv6l.cfg.
+- Mock: use DNF instead of yum.
+- Register agent on start up.
+
+* Fri Nov 4 2016 Gor Martsen <gor@fedberry.org> - 0.1.2-1
+- Add mockclient user with mock group.
+- Add requires on mock package.
+- auto register on mock.fedberry.org.
+
 * Thu Nov 3 2016 Gor Martsen <gor@fedberry.org> - 0.1.1-1
 - Add /etc/mock-client/mock-client.config file.
 - fix shabang and bin permissions

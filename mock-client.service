@@ -1,0 +1,15 @@
+[Unit]
+Description=Mock client service
+After=syslog.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/mock-client.pid
+ExecStart=/usr/bin/mock-client
+ExecStop=/bin/rm -f /var/run/mock-client.pid
+User=mockclient
+Group=mock
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

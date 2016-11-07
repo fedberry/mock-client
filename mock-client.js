@@ -252,6 +252,7 @@ const initTask = function(task) {
   downloadSRPM(task.url,fullFilePath, function(err) {
     if (err) {
       debug.log('Failed to download %s.', task.url);
+      task.log = task.log + 'Failed to download  ' + task.url + '\n';
       clearInterval(task.reportInterval);
       task.reportInterval = false;
       reportFinishedTask(task, 'failure');

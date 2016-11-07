@@ -207,7 +207,11 @@ const reportFinishedTask = function(task, status) {
 }
 
 const downloadSRPM = function(url, dest, cb) {
-  request(url, function(error, response, body) {
+  request({
+    url: url,
+    encoding: null,
+    method: 'GET'
+  }, function(error, response, body) {
     if (error) {
       cb(error)
     } else {

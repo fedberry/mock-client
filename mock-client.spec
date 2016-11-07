@@ -86,7 +86,7 @@ cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 %{_unitdir}/mock-client.service
 
 %changelog
-* Nov Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.0-1
+* Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.0-1
 - Add service file and start service 
 - Speed up mock via no cache clean via fedberry-24-armv6l.cfg.
 - Mock: use DNF instead of yum.

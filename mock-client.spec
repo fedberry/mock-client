@@ -1,5 +1,5 @@
 Name:           mock-client
-Version:        0.2.0
+Version:        0.2.1
 Release:        1%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 
@@ -16,6 +16,7 @@ Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 Requires:       mock
+Requires:       nodejs-debug
 
 Requires(pre): /usr/sbin/useradd, /usr/bin/getent
 Requires(postun): /usr/sbin/userdel
@@ -37,6 +38,8 @@ echo "Init fedberry-24-armv6l Env."
 su -l mockclient -c 'mock -r fedberry-24-armv6l --init'
 
 %systemd_post mock-client.service
+systemctl enable mock-client
+service mock-client start
 
 
 %preun
@@ -87,6 +90,11 @@ cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 %{_unitdir}/mock-client.service
 
 %changelog
+* Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.1-1
+- Enable and start service.
+- Fix issue with url trim.
+- Add dependencies on nodejs-debug package.
+
 * Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.0-1
 - Add service file and start service 
 - Speed up mock via no cache clean via fedberry-24-armv6l.cfg.

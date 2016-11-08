@@ -258,6 +258,9 @@ const downloadSRPM = function(url, dest, cb) {
  * Init task procedure.
  */
 const initTask = function(task) {
+  // Trim task url for potential new line empty strings and \r \n symbols
+  task.url = task.url.trim();
+
   if (!fs.existsSync(ROOTDIR + 'tasks')) {
     fs.mkdirSync(ROOTDIR + 'tasks');
     task.log = task.log + 'mkdir ' + ROOTDIR + 'tasks' + '\n';

@@ -52,8 +52,12 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-  %systemd_postun_with_restart mock-client.service
+  %systemd_postun mock-client.service
   /usr/sbin/userdel -fr mockclient
+fi
+
+if [ "$1" = "1" ]; then
+  %systemd_postun_with_restart mock-client.service
 fi
 
 

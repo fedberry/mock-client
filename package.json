@@ -1,6 +1,6 @@
 {
   "name": "mock-client",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Collect status tasks and post to github status api",
   "main": "mock-client.js",
   "scripts": {

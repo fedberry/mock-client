@@ -305,7 +305,7 @@ const runMock = function(task) {
     '--rebuild', ROOTDIR + 'tasks/' + task.tid + '/' + path.basename(task.url),
     '--resultdir', ROOTDIR + 'tasks/' + task.tid + '/result'
   ]
-  const mockRun = spawn('mock', options2.concat(options));
+  const mockRun = spawn('/usr/bin/mock', options2.concat(options));
 
   debug.debug('Token request: %s', JSON.stringify(options2.concat(options), null, 2));
 

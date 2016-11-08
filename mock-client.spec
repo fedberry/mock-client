@@ -26,29 +26,35 @@ Small and light nodejs based agent to run tasks from http://mock.fedberry.org
 
 
 %pre
-/usr/bin/getent passwd mockclient || /usr/sbin/useradd -mNr -d /home/mockclient -s /bin/bash mockclient -g mock
+if [ "$1" = "1" ]; then
+  /usr/bin/getent passwd mockclient || /usr/sbin/useradd -mNr -d /home/mockclient -s /bin/bash mockclient -g mock
+fi
 
 %post
 
-echo "Registering agent on http://mock.fedberry.org"
-/usr/bin/mock-client-register
+if [ "$1" = "1" ]; then
+  echo "Registering agent on http://mock.fedberry.org"
+  /usr/bin/mock-client-register
 
-#init enviorment
-echo "Init fedberry-24-armv6l Env."
-su -l mockclient -c 'mock -r fedberry-24-armv6l --init'
+  #init enviorment
+  echo "Init fedberry-24-armv6l Env."
+  su -l mockclient -c 'mock -r fedberry-24-armv6l --init'
 
-%systemd_post mock-client.service
-systemctl enable mock-client
-service mock-client start
-
+  %systemd_post mock-client.service
+  systemctl enable mock-client
+  service mock-client start
+fi
 
 %preun
-%systemd_preun mock-client.service
+if [ "$1" = "0" ]; then
+  %systemd_preun mock-client.service
+fi
 
 %postun
-%systemd_postun_with_restart mock-client.service
-/usr/sbin/userdel -fr mockclient
-
+if [ "$1" = "0" ]; then
+  %systemd_postun_with_restart mock-client.service
+  /usr/sbin/userdel -fr mockclient
+fi
 
 
 %prep
@@ -90,6 +96,11 @@ cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 %{_unitdir}/mock-client.service
 
 %changelog
+* Tue Nov 8 2016 Gor Martsen <gor@fedberry.org> - 0.2.4-1
+- Do not register mock-client again when update package.
+- Do not detele mockclient on upgrade phase.
+- Do not init env on upgrade.
+
 * Tue Nov 8 2016 Gor Martsen <gor@fedberry.org> - 0.2.3-1
 - Use su -l in mock-client.service file. Mock require properly logged in user to work.
 - sign file send request with signature.

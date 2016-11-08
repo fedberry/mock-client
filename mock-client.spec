@@ -94,6 +94,7 @@ cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 - Enable and start service.
 - Fix issue with url trim.
 - Add dependencies on nodejs-debug package.
+- Fix mock-client.service file to log data.
 
 * Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.0-1
 - Add service file and start service 

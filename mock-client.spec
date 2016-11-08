@@ -1,5 +1,5 @@
 Name:           mock-client
-Version:        0.2.3
+Version:        0.2.4
 Release:        1%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 

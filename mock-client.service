@@ -4,10 +4,7 @@ After=syslog.target
 
 [Service]
 Environment=DEBUG=*:log
-ExecStart=/usr/bin/mock-client
-ExecStop=/bin/rm -f /var/run/mock-client.pid
-User=mockclient
-Group=mock
+ExecStart=/usr/bin/su -l mockclient -c /usr/bin/mock-client
 Restart=on-failure
 
 [Install]

@@ -1,5 +1,5 @@
 Name:           mock-client
-Version:        0.2.2
+Version:        0.2.3
 Release:        1%{?dist}
 Summary:        Mock.fedberry.org agent to run builds.
 
@@ -90,9 +90,12 @@ cp mock-client.service %{buildroot}%{_unitdir}/mock-client.service
 %{_unitdir}/mock-client.service
 
 %changelog
+* Tue Nov 8 2016 Gor Martsen <gor@fedberry.org> - 0.2.3-1
+- Use su -l in mock-client.service file. Mock require properly logged in user to work.
+- sign file send request with signature.
+
 * Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.2-1
 - Use direct pach /usr/bin/mock to avoid path conflict with /usr/sbin/mock.
-
 
 * Mon Nov 7 2016 Gor Martsen <gor@fedberry.org> - 0.2.1-1
 - Enable and start service.

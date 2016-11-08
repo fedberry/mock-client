@@ -238,7 +238,7 @@ const downloadSRPM = function(url, dest, cb) {
       if (response.statusCode !== 200) {
         cb(true);
       } else {
-        if(response.headers['content-type'] != 'application/x-rpm') {
+        if (response.headers['content-type'] != 'application/x-rpm') {
           cb(true);
         }else {
           fs.writeFile(dest, body, function(err) {
@@ -312,7 +312,7 @@ const runMock = function(task) {
   task.log = task.log +  'mock ' + process.env.MOCK_OPTIONS
     + ' -r ' + process.env.MOCK_CONFIG
     + ' --rebuild ' + ROOTDIR + 'tasks/' + task.tid + '/' + path.basename(task.url)
-    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' + "\n";
+    + ' --resultdir ' + ROOTDIR + 'tasks/' + task.tid + '/result' + '\n';
 
   mockRun.stdout.on('data', function(data) {
     task.log = task.log + 'stdout: ' + data;
@@ -386,17 +386,19 @@ const sendFile = function(task, file) {
   var url = process.env.MOCK_SERVER + '/api/task/' + task.tid;
   debug.log(' POST to: %s',url);
 
+  var fileContent = fs.readFileSync(file);
   var headers = {
     token: token,
     'User-Agent': 'RestClient.' + process.env.npm_package_version,
     'content-type': 'application/x-redhat-package-manager',
     filename: path.basename(file),
+    signature: 'sha256=' + require('./includes/signature.js')('sha256', fileContent, process.env.SECRET)
   }
 
   request({
     method: 'POST',
     url: url,
-    body: fs.readFileSync(file),
+    body: fileContent,
     headers: headers
   }, function optionalCallback(err, httpResponse, body) {
     if (err) {
